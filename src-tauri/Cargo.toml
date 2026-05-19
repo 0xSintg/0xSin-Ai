@@ -1,5 +1,5 @@
 [package]
-name = "0xsin-ai"
+name = "sinai"
 version = "3.5.0"
 description = "A friendly, human-like AI chatbot powered by Gemini"
 authors = ["iamlooper"]
