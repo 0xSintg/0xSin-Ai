@@ -299,7 +299,14 @@ export default function ChatView() {
     if (mimeType.startsWith("video/")) return { icon: "videocam", label: "Video" };
     if (mimeType.startsWith("audio/")) return { icon: "audio_file", label: "Audio" };
     if (mimeType === "application/pdf") return { icon: "picture_as_pdf", label: "PDF" };
+    if (mimeType.includes("word") || mimeType.includes("document")) return { icon: "description", label: "DOC" };
+    if (mimeType.includes("spreadsheet") || mimeType.includes("excel")) return { icon: "table_chart", label: "XLS" };
+    if (mimeType.includes("presentation") || mimeType.includes("powerpoint")) return { icon: "slideshow", label: "PPT" };
+    if (mimeType.includes("zip") || mimeType.includes("tar") || mimeType.includes("gzip")) return { icon: "folder_zip", label: "ZIP" };
     if (mimeType.startsWith("text/")) return { icon: "description", label: "TXT" };
+    if (mimeType.includes("json")) return { icon: "data_object", label: "JSON" };
+    if (mimeType.includes("javascript") || mimeType.includes("typescript")) return { icon: "code", label: "CODE" };
+    if (mimeType.includes("python") || mimeType.includes("x-python")) return { icon: "code", label: "PY" };
     return { icon: "attach_file", label: "File" };
   };
 
@@ -839,7 +846,7 @@ export default function ChatView() {
             ref={fileInputRef}
             type="file"
             multiple
-            accept="image/*,video/*,audio/*,application/pdf,text/*,.py,.js,.ts,.json,.csv,.md,.xml,.html,.rtf,.epub"
+            accept="image/*,video/*,audio/*,application/pdf,text/*,.py,.js,.ts,.jsx,.tsx,.json,.csv,.md,.xml,.html,.htm,.rtf,.epub,.docx,.doc,.xlsx,.xls,.pptx,.ppt,.zip,.tar,.gz,.yaml,.yml,.toml,.ini,.cfg,.sh,.bash,.c,.cpp,.h,.hpp,.java,.kt,.swift,.go,.rs,.rb,.php,.sql,.graphql,.ipynb"
             style="display:none"
             onChange={handleFileSelect}
           />

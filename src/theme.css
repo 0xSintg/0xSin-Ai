@@ -199,3 +199,176 @@ img, a {
   --motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
   --motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
 }
+
+/* === 0xSin AI — Performance & Visual Improvements === */
+
+/* GPU-accelerated compositing for key animated elements */
+.message,
+.welcome-screen,
+.snackbar,
+.toolbar-popup,
+.sidebar {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Smoother, faster welcome animation */
+@keyframes welcome-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Smoother message entrance */
+@keyframes message-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Improved typing indicator — smoother bounce */
+@keyframes typing-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40%           { transform: translateY(-6px); opacity: 1; }
+}
+
+/* Improved thinking pulse */
+@keyframes thinking-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+/* === Improved Mobile View === */
+@media (max-width: 599px) {
+  /* Fix welcome screen height on mobile browsers with dynamic address bar */
+  .welcome-layout {
+    min-height: -webkit-fill-available;
+    padding-bottom: env(safe-area-inset-bottom, 12px);
+  }
+
+  /* Prevent content jumping on virtual keyboard open */
+  .chat-view {
+    height: 100dvh;
+  }
+
+  /* Better touch targets */
+  .suggestion-chip {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+
+  /* Smoother scroll on iOS */
+  .chat-messages {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Fix model popup clipping off right edge */
+  .model-popup {
+    left: 0 !important;
+    right: 0 !important;
+    max-width: 100%;
+  }
+
+  /* Better attachment strip on mobile */
+  .attachment-strip {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  /* Bigger tap area for remove button */
+  .attachment-remove {
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  /* Welcome greeting size adjustment */
+  .welcome-greeting {
+    font-size: clamp(24px, 7vw, 36px);
+  }
+
+  /* Fix snackbar bottom on mobile with nav bar */
+  .snackbar {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Message bubble max width on mobile */
+  .bubble-user {
+    max-width: 88vw;
+  }
+}
+
+/* === Smooth Thinking Animation === */
+.message-thinking summary {
+  transition: color var(--motion-duration-short) var(--motion-easing-standard);
+}
+
+.thinking-icon {
+  animation: thinking-pulse 1.8s ease-in-out infinite;
+  display: inline-flex;
+}
+
+/* Stop pulse when thinking is done (details open = collapsed) */
+details[open] .thinking-icon {
+  animation: none;
+}
+
+/* Smooth thinking content reveal */
+.thinking-content {
+  animation: welcome-in var(--motion-duration-medium) var(--motion-easing-emphasized-decelerate);
+}
+
+/* === Smooth Response Streaming === */
+.message-text {
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Smooth code block appearance */
+.exec-code-block,
+.code-exec-result {
+  animation: message-in var(--motion-duration-short) var(--motion-easing-emphasized-decelerate);
+}
+
+/* === Performance: reduce paint on scroll === */
+.sidebar-conversations {
+  contain: layout style;
+}
+
+.chat-messages {
+  contain: layout style;
+}
+
+/* === Improved Popup Animations === */
+.toolbar-popup {
+  animation: popup-in var(--motion-duration-short) var(--motion-easing-emphasized-decelerate);
+  transform-origin: bottom center;
+}
+
+@keyframes popup-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* === Better Focus Styles === */
+.chat-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--md-sys-color-primary);
+  border-radius: var(--md-sys-shape-corner-medium);
+}
+
+/* === Improved Avatar === */
+.message-avatar {
+  background: transparent;
+  box-shadow: none;
+}
+
+.avatar-icon.sinai-logo {
+  background-color: var(--md-sys-color-primary);
+  border-radius: 50%;
+  padding: 4px;
+}
+
+/* === Improved Scrollbar === */
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.sidebar-conversations::-webkit-scrollbar { width: 4px; }
