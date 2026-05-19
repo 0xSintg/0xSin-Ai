@@ -1,0 +1,85 @@
+name: Build Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Install Android NDK
+        run: |
+          sdkmanager --install "ndk;29.0.14206865"
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/29.0.14206865" >> $GITHUB_ENV
+          echo "NDK_VERSION=29.0.14206865" >> $GITHUB_ENV
+
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android,i686-linux-android
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            src-tauri/target/
+          key: ${{ runner.os }}-cargo-android-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-android-
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install frontend dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install cargo-ndk
+        run: command -v cargo-ndk >/dev/null 2>&1 || cargo install cargo-ndk
+
+      - name: Set CARGO_HOME
+        run: echo "CARGO_HOME=$HOME/.cargo" >> $GITHUB_ENV
+
+      - name: Regenerate Android project
+        run: |
+          rm -rf src-tauri/gen/android
+          bun run tauri android init
+
+      - name: Build Android APK
+        run: bun run tauri android build --apk --debug
+
+      - name: Rename APKs
+        run: |
+          echo "=== All generated APKs ==="
+          find src-tauri/gen/android/app/build/outputs/apk/ -name '*.apk' -type f
+          mkdir -p android-apks
+          while IFS= read -r apk; do
+            filename=$(basename "$apk")
+            cp "$apk" "android-apks/$filename"
+          done < <(find src-tauri/gen/android/app/build/outputs/apk/ -name '*.apk' -type f)
+          ls -lh android-apks/
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: 0xsin-ai-android
+          path: android-apks/*.apk
+          if-no-files-found: warn
