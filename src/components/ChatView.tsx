@@ -27,6 +27,7 @@ import { sidebarOpen, setSidebarOpen } from "../App";
 import { isTauri, isAndroid } from "../lib/platform";
 import type { AndroidFsUri } from "tauri-plugin-android-fs-api";
 import "./ChatView.css";
+import { getFileTypeInfo, formatBytes } from "./fileTypeInfo";
 
 import {
   SUGGESTIONS, MORNING_GROUPS, AFTERNOON_GROUPS, EVENING_GROUPS, NIGHT_GROUPS,
@@ -72,30 +73,7 @@ const ACCEPTED_FILE_TYPES = [
 
 const TEXT_COLLAPSE_THRESHOLD = 2500;
 
-function getFileTypeInfo(mimeType: string, fileName?: string): { icon: string; label: string; color: string } {
-  const ext = fileName?.split(".").pop()?.toLowerCase() ?? "";
-  if (mimeType.startsWith("image/")) return { icon: "image", label: (mimeType.split("/")[1] || "IMG").toUpperCase(), color: "#4CAF50" };
-  if (mimeType.startsWith("video/")) return { icon: "videocam", label: "Video", color: "#E53935" };
-  if (mimeType.startsWith("audio/")) return { icon: "audio_file", label: "Audio", color: "#8E24AA" };
-  if (mimeType === "application/pdf") return { icon: "picture_as_pdf", label: "PDF", color: "#F4511E" };
-  if (["zip","tar","gz","7z","rar","bz2","xz"].includes(ext) || mimeType.includes("zip") || mimeType.includes("tar")) return { icon: "folder_zip", label: ext.toUpperCase() || "ZIP", color: "#FB8C00" };
-  if (["doc","docx"].includes(ext)) return { icon: "description", label: "DOCX", color: "#1E88E5" };
-  if (["xls","xlsx"].includes(ext)) return { icon: "table_chart", label: "XLSX", color: "#43A047" };
-  if (["ppt","pptx"].includes(ext)) return { icon: "slideshow", label: "PPTX", color: "#FB8C00" };
-  if (ext === "ipynb") return { icon: "science", label: "IPYNB", color: "#FB8C00" };
-  if (ext === "json") return { icon: "data_object", label: "JSON", color: "#FB8C00" };
-  if (ext === "csv") return { icon: "table_chart", label: "CSV", color: "#43A047" };
-  if (ext === "md") return { icon: "article", label: "MD", color: "#546E7A" };
-  const codeExts = ["py","js","ts","jsx","tsx","rs","go","java","cpp","c","h","rb","php","swift","kt","sh","bash","sql","graphql","vue","svelte","yaml","yml","toml"];
-  if (codeExts.includes(ext)) return { icon: "code", label: ext.toUpperCase(), color: "#1E88E5" };
-  return { icon: "attach_file", label: ext.toUpperCase() || "File", color: "#78909C" };
-}
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)}KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
-}
 
 export default function ChatView() {
   let chatMessagesRef: HTMLDivElement | undefined;
@@ -301,6 +279,21 @@ export default function ChatView() {
     editMessage(msg.id, getTextContent(msg), undefined);
   };
 
+
+  // === Generated File Download ===
+  const triggerBlobDownload = (content: string, filename: string, mimeType = "text/plain") => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement("a"), {
+      href: url, download: filename, style: "display:none",
+    });
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showSnackbar(`${filename} downloaded`);
+  };
+
   // === Part Renderer ===
   const renderPart = (part: MessagePart, isUser: boolean, msgId: string) => {
     switch (part.type) {
@@ -314,7 +307,7 @@ export default function ChatView() {
             <Show when={isLong}>
               <button class="show-more-btn" type="button" onClick={() => toggleExpanded(msgId)}>
                 <md-icon>{expanded ? "expand_less" : "expand_more"}</md-icon>
-                {expanded ? "Show less" : `Show more (${Math.ceil(part.text.length / 100) * 100}+ chars)`}
+                {expanded ? "Show less" : `Show more ({Math.ceil(part.text.length / 100) * 100}+ chars)`}
               </button>
             </Show>
           </div>
@@ -435,6 +428,33 @@ export default function ChatView() {
             </div>
           </Show>
 
+          <Show when={!isUser && (msg as any).generatedFiles?.length > 0}>
+            <div class="generated-files-row">
+              <For each={(msg as any).generatedFiles as Array<{name: string; content: string; mimeType?: string}>}>{(gf) => {
+                const info = getFileTypeInfo(gf.mimeType ?? "text/plain", gf.name);
+                const sizeLabel = `${gf.content.length.toLocaleString()} chars`;
+                return (
+                  <button
+                    class="generated-file-chip"
+                    type="button"
+                    onClick={() => triggerBlobDownload(gf.content, gf.name, gf.mimeType)}
+                  >
+                    <div
+                      class="gen-file-icon-wrap"
+                      style={{ background: `${info.color}18`, border: `1px solid ${info.color}30` }}
+                    >
+                      <md-icon style={{ color: info.color }}>{info.icon}</md-icon>
+                    </div>
+                    <div class="gen-file-meta">
+                      <span class="gen-file-name">{gf.name}</span>
+                      <span class="gen-file-size">{sizeLabel} — click to download</span>
+                    </div>
+                    <md-icon class="gen-file-download-icon">download</md-icon>
+                  </button>
+                );
+              }}</For>
+            </div>
+          </Show>
           <div class={`message-actions ${isUser ? "actions-user" : "actions-model"}`}>
             <span class="message-time md-typescale-label-small">{formatTime(msg.createdAt)}</span>
             <Show when={isUser && branch()}>{() => {
@@ -491,7 +511,7 @@ export default function ChatView() {
       <Show when={isDragOver()}>
         <div class="drop-overlay">
           <md-icon>upload_file</md-icon>
-          <span>Drop files to attach</span>
+          <span class="md-typescale-label-large">Drop files to attach</span>
         </div>
       </Show>
 

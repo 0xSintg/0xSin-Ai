@@ -1,11 +1,10 @@
 /* =====================================================
-   ChatView.css — Enhanced Edition
-   • Better visuals (grey bg preserved)
-   • Smooth thinking / streaming animations
-   • Mobile-first responsive fixes
-   • Show more / show less
-   • Drag & drop overlay
-   • Colourised file type chips
+   ChatView.css — Enhanced Edition v2
+   • Universal file upload support (all MIME types)
+   • Dynamic file generation + download chips
+   • Show more / Show less collapsible content
+   • Mobile safe area (env(safe-area-inset-*))
+   • No emoji — SVG/icon-font only
    ===================================================== */
 
 .chat-view {
@@ -23,6 +22,10 @@
   align-items: center;
   gap: 4px;
   padding: 8px 8px 8px 4px;
+  /* Safe area: top notch / status bar */
+  padding-top: max(8px, env(safe-area-inset-top));
+  padding-left: max(4px, env(safe-area-inset-left));
+  padding-right: max(8px, env(safe-area-inset-right));
   background: var(--md-sys-color-surface);
   flex-shrink: 0;
   min-height: 56px;
@@ -175,7 +178,6 @@
   max-width: 840px;
   width: 100%;
   margin: 0 auto;
-  /* Performance: promote to own layer */
   will-change: scroll-position;
   contain: layout style;
 }
@@ -331,7 +333,6 @@
   color: var(--md-sys-color-primary);
 }
 
-/* Pulsing icon while actively thinking */
 @keyframes thinking-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.6; transform: scale(0.92); }
@@ -351,7 +352,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* === Typing indicator (3-dot bounce) === */
+/* === Typing indicator === */
 .typing-indicator {
   display: flex;
   align-items: center;
@@ -379,7 +380,9 @@
   40%           { transform: translateY(-7px); opacity: 1; }
 }
 
-/* === Show More / Less === */
+/* =====================================================
+   SHOW MORE / SHOW LESS
+   ===================================================== */
 .show-more-btn {
   display: inline-flex;
   align-items: center;
@@ -404,8 +407,87 @@
   border-color: var(--md-sys-color-primary);
 }
 
-.show-more-btn md-icon {
-  --md-icon-size: 16px;
+.show-more-btn md-icon { --md-icon-size: 16px; }
+
+/* =====================================================
+   GENERATED FILE DOWNLOAD CHIPS
+   ===================================================== */
+.generated-files-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.generated-file-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--md-sys-shape-corner-medium);
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  cursor: pointer;
+  font: inherit;
+  color: var(--md-sys-color-on-surface);
+  text-align: left;
+  transition:
+    background var(--motion-duration-short) var(--motion-easing-standard),
+    border-color var(--motion-duration-short) var(--motion-easing-standard),
+    transform var(--motion-duration-short) var(--motion-easing-standard);
+  width: 100%;
+}
+
+.generated-file-chip:hover {
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-outline);
+  transform: translateY(-1px);
+}
+
+.generated-file-chip:active { transform: translateY(0); }
+
+.gen-file-icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--md-sys-shape-corner-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gen-file-icon-wrap md-icon { --md-icon-size: 20px; }
+
+.gen-file-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.gen-file-name { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gen-file-size { font-size: 11px; color: var(--md-sys-color-on-surface-variant); }
+
+.gen-file-download-icon {
+  --md-icon-size: 20px;
+  color: var(--md-sys-color-on-surface-variant);
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   FILE TYPE ICONS (colourised, no emoji)
+   ===================================================== */
+.file-type-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--md-sys-shape-corner-small);
+  border: 1px solid transparent;
+}
+
+.file-type-badge md-icon { --md-icon-size: 24px; }
+
+.file-type-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-top: 1px;
+  line-height: 1;
 }
 
 /* === Message image === */
@@ -425,7 +507,6 @@
   height: auto;
   object-fit: cover;
   border-radius: var(--md-sys-shape-corner-large);
-  loading: lazy;
   transition: transform var(--motion-duration-short) var(--motion-easing-standard);
 }
 
@@ -582,7 +663,6 @@
   font-family: "Fira Code", "Cascadia Code", "Consolas", monospace;
 }
 
-/* Code execution result */
 .code-exec-result {
   margin: 8px 0;
   border-radius: var(--md-sys-shape-corner-medium);
@@ -619,7 +699,6 @@
   word-break: break-all;
 }
 
-/* Function call chip */
 .function-call-chip {
   display: inline-flex;
   align-items: center;
@@ -634,7 +713,6 @@
 
 .function-call-chip md-icon { --md-icon-size: 16px; color: var(--md-sys-color-tertiary); }
 
-/* Chat error */
 .chat-error {
   display: flex;
   align-items: flex-start;
@@ -649,9 +727,15 @@
 
 .error-icon { --md-icon-size: 20px; flex-shrink: 0; margin-top: 1px; color: var(--md-sys-color-error); }
 
-/* === Input Area === */
+/* =====================================================
+   INPUT AREA — with full safe-area support
+   ===================================================== */
 .chat-input-area {
   padding: 8px 16px 16px;
+  /* Bottom: account for home bar / gesture area */
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -727,7 +811,6 @@
   resize: none;
   min-height: 24px;
   max-height: 200px;
-  /* smooth height expansion */
   transition: height 80ms var(--motion-easing-standard);
 }
 
@@ -858,7 +941,6 @@
   -webkit-box-orient: vertical;
 }
 
-/* Upload error banner */
 .upload-error-banner {
   display: flex;
   align-items: center;
@@ -875,7 +957,6 @@
 .upload-error-banner .md-typescale-label-medium { color: var(--md-sys-color-on-error-container); flex: 1; }
 .upload-error-dismiss { flex-shrink: 0; }
 
-/* Edit banner */
 .edit-banner {
   display: flex;
   align-items: center;
@@ -950,7 +1031,6 @@
   font-weight: 600;
 }
 
-/* Tool toggle row */
 .tool-toggle {
   display: flex;
   align-items: center;
@@ -965,7 +1045,6 @@
 .tool-toggle span:not(.toggle-track):not(.toggle-thumb) { flex: 1; font-size: 14px; color: var(--md-sys-color-on-surface); }
 .tool-toggle input[type="checkbox"] { display: none; }
 
-/* Toggle switch */
 .toggle-track {
   position: relative;
   width: 40px;
@@ -1003,7 +1082,6 @@
   background: var(--md-sys-color-on-primary);
 }
 
-/* Tool badge */
 .tool-badge {
   position: absolute;
   top: -4px;
@@ -1029,7 +1107,6 @@
 
 .tools-active { --md-icon-button-icon-color: var(--md-sys-color-primary) !important; }
 
-/* Model popup */
 .model-popup { min-width: 240px; }
 
 .model-selector-btn {
@@ -1080,11 +1157,9 @@
 .model-option.selected .md-typescale-body-medium { color: var(--md-sys-color-primary); font-weight: 600; }
 .model-check { --md-icon-size: 18px; color: var(--md-sys-color-primary); flex-shrink: 0; }
 
-/* Tools popup right-anchored */
 .tools-popup  { left: 0; }
 .model-popup  { right: 0; left: auto; }
 
-/* Instructions popup */
 .instructions-popup { min-width: 280px; max-width: 340px; max-height: 400px; overflow-y: auto; }
 
 /* === Icon buttons === */
@@ -1115,7 +1190,6 @@
 .icon-btn-sm { width: 32px; height: 32px; }
 .icon-btn-sm md-icon { --md-icon-size: 18px; }
 
-/* Download button (image overlay) */
 .image-download-btn {
   display: inline-flex;
   align-items: center;
@@ -1136,7 +1210,6 @@
 .image-download-btn:hover { background: rgba(0, 0, 0, 0.8); transform: scale(1.08); }
 .image-download-btn md-icon { --md-icon-size: 18px; }
 
-/* Text / tonal buttons */
 .text-btn {
   display: inline-flex;
   align-items: center;
@@ -1245,8 +1318,7 @@
   font: inherit;
   white-space: nowrap;
   flex-shrink: 0;
-  transition:
-    all var(--motion-duration-short) var(--motion-easing-standard);
+  transition: all var(--motion-duration-short) var(--motion-easing-standard);
 }
 
 .thinking-btn:hover { background: var(--md-sys-color-surface-container-high); border-color: var(--md-sys-color-outline); }
@@ -1254,7 +1326,6 @@
 .thinking-btn.thinking-active { border-color: var(--md-sys-color-primary); color: var(--md-sys-color-primary); }
 .thinking-btn.thinking-active md-icon { color: var(--md-sys-color-primary); }
 
-/* Thinking popup */
 .thinking-popup { min-width: 240px; max-width: min(320px, calc(100vw - 32px)); }
 
 .thinking-levels { padding: 8px 16px 12px; }
@@ -1281,7 +1352,7 @@
   border-color: var(--md-sys-color-primary);
 }
 
-/* === Snackbar === */
+/* === Snackbar — safe area aware === */
 @keyframes snackbar-in {
   from { opacity: 0; transform: translateX(-50%) translateY(10px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -1294,7 +1365,8 @@
 
 .snackbar {
   position: fixed;
-  bottom: 24px;
+  /* Sit above the home bar on notched devices */
+  bottom: max(24px, calc(env(safe-area-inset-bottom) + 16px));
   left: 50%;
   z-index: 300;
   background: var(--md-sys-color-inverse-surface);
@@ -1337,8 +1409,8 @@
   /* Always show actions on touch (no hover) */
   .message .message-actions { opacity: 1; }
 
-  /* Input area */
-  .chat-input-area { padding: 6px 10px 12px; }
+  /* Input area — safe area already handled via env() above */
+  .chat-input-area { padding: 6px 10px 10px; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
   .chat-form { border-radius: var(--md-sys-shape-corner-large); }
 
   /* Hide desktop suggestion row; show inside welcome */
@@ -1379,11 +1451,15 @@
     bottom: calc(100% + 6px);
   }
 
-  /* Badge on static anchor: use relative positioning */
+  /* Badge on static anchor */
   .tool-badge { position: relative; top: -6px; right: auto; margin-left: -10px; }
 
   /* Show more button: smaller */
   .show-more-btn { font-size: 12px; padding: 3px 10px 3px 6px; }
+
+  /* Generated file chips: smaller text */
+  .gen-file-name { font-size: 12px; }
+  .gen-file-size { font-size: 10px; }
 }
 
 /* Very small screens */
