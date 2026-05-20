@@ -539,3 +539,20 @@
     background: rgba(26, 107, 60, 0.2);
   }
 }
+
+/* === Streaming text cursor === */
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Code copy button: smooth feedback */
+.md-code-copy {
+  transition:
+    background var(--motion-duration-short) var(--motion-easing-standard),
+    color var(--motion-duration-short) var(--motion-easing-standard),
+    transform var(--motion-duration-short) var(--motion-easing-standard) !important;
+}
+
+.md-code-copy:hover { transform: scale(1.04) !important; }
+.md-code-copy:active { transform: scale(0.96) !important; }

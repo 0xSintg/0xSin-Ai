@@ -1,8 +1,4 @@
-/* Suppress transitions and fast-forward animations during initial mount to
-   prevent visual flash.  We use animation-duration:0s (not animation:none)
-   so that animation-name stays unchanged.  When the preload class is removed
-   only the duration changes, which does NOT restart animations per CSS spec,
-   preventing the welcome-in / message-in slide from replaying visibly. */
+/* Suppress transitions/animations during initial mount */
 .preload *,
 .preload *::before,
 .preload *::after {
@@ -16,21 +12,22 @@
   width: 100%;
   overflow: hidden;
   position: relative;
+  /* GPU layer for the whole shell */
+  transform: translateZ(0);
+  will-change: contents;
 }
 
-/* === Desktop (>=900px): sidebar pushes content, collapsible via width === */
-
+/* === Desktop (≥900px): sidebar pushes content === */
 .sidebar-container {
   flex-shrink: 0;
   height: 100%;
   overflow: hidden;
   width: 0;
   transition: width var(--motion-duration-medium) var(--motion-easing-emphasized);
+  will-change: width;
 }
 
-.sidebar-container.open {
-  width: 300px;
-}
+.sidebar-container.open { width: 300px; }
 
 .chat-container {
   flex: 1;
@@ -41,12 +38,9 @@
   transition: flex var(--motion-duration-medium) var(--motion-easing-emphasized);
 }
 
-.sidebar-backdrop {
-  display: none;
-}
+.sidebar-backdrop { display: none; }
 
-/* === Tablet / Mobile (<900px): sidebar overlays as modal drawer === */
-
+/* === Tablet/Mobile (<900px): sidebar as modal drawer === */
 @media (max-width: 899px) {
   .sidebar-container {
     position: fixed;
@@ -56,13 +50,15 @@
     width: 300px;
     transform: translateX(-100%);
     box-shadow: none;
-    transition: transform var(--motion-duration-medium) var(--motion-easing-emphasized),
-                box-shadow var(--motion-duration-medium) var(--motion-easing-emphasized);
+    transition:
+      transform var(--motion-duration-medium) var(--motion-easing-emphasized),
+      box-shadow var(--motion-duration-medium) var(--motion-easing-emphasized);
+    will-change: transform;
   }
 
   .sidebar-container.open {
     transform: translateX(0);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.22);
     width: 300px;
   }
 
@@ -72,7 +68,7 @@
     inset: 0;
     z-index: 99;
     background: var(--md-sys-color-scrim);
-    opacity: 0.32;
+    opacity: 0.28;
     animation: fade-in var(--motion-duration-short) var(--motion-easing-emphasized-decelerate);
   }
 }
@@ -80,12 +76,12 @@
 @media (max-width: 599px) {
   .sidebar-container,
   .sidebar-container.open {
-    width: 85vw;
+    width: 84vw;
     max-width: 300px;
   }
 }
 
 @keyframes fade-in {
   from { opacity: 0; }
-  to { opacity: 0.32; }
+  to   { opacity: 0.28; }
 }

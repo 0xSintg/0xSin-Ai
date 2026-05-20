@@ -1,12 +1,11 @@
-/* === Material Design 3 Expressive Theme for 0xSin AI === */
-/* Expressive = larger corners, vibrant palette, playful motion, generous spacing */
+/* === Material Design 3 Expressive Theme for 0xSin AI — Enhanced Edition === */
 
 :root {
-  /* === Reference Typeface === */
+  /* === Typeface === */
   --md-ref-typeface-brand: "Google Sans", "Segoe UI", system-ui, sans-serif;
   --md-ref-typeface-plain: "Google Sans Text", "Segoe UI", system-ui, sans-serif;
 
-  /* === System Color (Light) - Material Theme Builder seed #6DB0FF === */
+  /* === System Colors (Light) — seed #6DB0FF === */
   --md-sys-color-primary: #39608F;
   --md-sys-color-on-primary: #FFFFFF;
   --md-sys-color-primary-container: #D3E4FF;
@@ -23,19 +22,21 @@
   --md-sys-color-on-error: #FFFFFF;
   --md-sys-color-error-container: #FFDAD6;
   --md-sys-color-on-error-container: #93000A;
-  --md-sys-color-background: #F8F9FF;
+
+  /* Grey-toned background preserved as requested */
+  --md-sys-color-background: #F4F5FA;
   --md-sys-color-on-background: #191C20;
-  --md-sys-color-surface: #F8F9FF;
+  --md-sys-color-surface: #F4F5FA;
   --md-sys-color-on-surface: #191C20;
   --md-sys-color-surface-variant: #DFE2EB;
   --md-sys-color-on-surface-variant: #43474E;
   --md-sys-color-surface-container: #ECEDF4;
-  --md-sys-color-surface-container-low: #F2F3FA;
+  --md-sys-color-surface-container-low: #F0F1F7;
   --md-sys-color-surface-container-lowest: #FFFFFF;
-  --md-sys-color-surface-container-high: #E7E8EE;
-  --md-sys-color-surface-container-highest: #E1E2E8;
+  --md-sys-color-surface-container-high: #E4E5EC;
+  --md-sys-color-surface-container-highest: #DEDFE6;
   --md-sys-color-surface-bright: #F8F9FF;
-  --md-sys-color-surface-dim: #D8DAE0;
+  --md-sys-color-surface-dim: #D2D4DA;
   --md-sys-color-outline: #73777F;
   --md-sys-color-outline-variant: #C3C6CF;
   --md-sys-color-inverse-surface: #2E3035;
@@ -45,7 +46,7 @@
   --md-sys-color-scrim: #000000;
   --md-sys-color-surface-tint: #39608F;
 
-  /* === Shape (Expressive = larger radii) === */
+  /* === Shape === */
   --md-sys-shape-corner-none: 0px;
   --md-sys-shape-corner-extra-small: 8px;
   --md-sys-shape-corner-small: 12px;
@@ -54,11 +55,10 @@
   --md-sys-shape-corner-extra-large: 32px;
   --md-sys-shape-corner-full: 9999px;
 
-  /* === Elevation shadow color === */
-  --md-elevation-shadow-color: rgba(0, 0, 0, 0.15);
+  --md-elevation-shadow-color: rgba(0, 0, 0, 0.12);
 }
 
-/* === Dark Theme - Material Theme Builder seed #6DB0FF === */
+/* === Dark Theme === */
 @media (prefers-color-scheme: dark) {
   :root {
     --md-sys-color-primary: #A2C9FE;
@@ -77,19 +77,20 @@
     --md-sys-color-on-error: #690005;
     --md-sys-color-error-container: #93000A;
     --md-sys-color-on-error-container: #FFDAD6;
-    --md-sys-color-background: #111418;
+
+    --md-sys-color-background: #0F1318;
     --md-sys-color-on-background: #E1E2E8;
-    --md-sys-color-surface: #111418;
+    --md-sys-color-surface: #0F1318;
     --md-sys-color-on-surface: #E1E2E8;
     --md-sys-color-surface-variant: #43474E;
     --md-sys-color-on-surface-variant: #C3C6CF;
-    --md-sys-color-surface-container: #1D2024;
-    --md-sys-color-surface-container-low: #191C20;
-    --md-sys-color-surface-container-lowest: #0B0E13;
-    --md-sys-color-surface-container-high: #272A2F;
-    --md-sys-color-surface-container-highest: #32353A;
-    --md-sys-color-surface-bright: #37393E;
-    --md-sys-color-surface-dim: #111418;
+    --md-sys-color-surface-container: #1A1D22;
+    --md-sys-color-surface-container-low: #161920;
+    --md-sys-color-surface-container-lowest: #090D12;
+    --md-sys-color-surface-container-high: #242830;
+    --md-sys-color-surface-container-highest: #2F3238;
+    --md-sys-color-surface-bright: #353840;
+    --md-sys-color-surface-dim: #0F1318;
     --md-sys-color-outline: #8D9199;
     --md-sys-color-outline-variant: #43474E;
     --md-sys-color-inverse-surface: #E1E2E8;
@@ -98,23 +99,14 @@
     --md-sys-color-shadow: #000000;
     --md-sys-color-scrim: #000000;
     --md-sys-color-surface-tint: #A2C9FE;
-    --md-elevation-shadow-color: rgba(0, 0, 0, 0.3);
+    --md-elevation-shadow-color: rgba(0, 0, 0, 0.28);
   }
 }
 
-/* === Global Styles === */
+/* === Global Reset === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body, #root {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
+html, body, #root { height: 100%; width: 100%; overflow: hidden; }
 
 body {
   font-family: var(--md-ref-typeface-plain);
@@ -128,11 +120,10 @@ body {
   overscroll-behavior: none;
 }
 
-/* === Native Desktop Feel === */
+/* Force GPU compositing for smoother scrolling */
+body { transform: translateZ(0); }
 
-body, button, input, select, textarea {
-  font-family: var(--md-ref-typeface-plain);
-}
+body, button, input, select, textarea { font-family: var(--md-ref-typeface-plain); }
 
 body {
   user-select: none;
@@ -156,28 +147,15 @@ md-fab, md-list-item[type="button"] {
   cursor: pointer;
 }
 
-img, a {
-  -webkit-user-drag: none;
-  user-select: none;
-}
+img, a { -webkit-user-drag: none; user-select: none; }
 
-/* === Scrollbar Styling === */
+/* === Scrollbar === */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--md-sys-color-outline-variant); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--md-sys-color-outline); }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--md-sys-color-outline-variant);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--md-sys-color-outline);
-}
-
-/* === Brand Logo Mask === */
+/* === Logo mask === */
 .sinai-logo {
   -webkit-mask-image: url('./assets/logo.svg');
   mask-image: url('./assets/logo.svg');
@@ -189,186 +167,13 @@ img, a {
   mask-position: center;
 }
 
-/* === Expressive Animation Tokens === */
+/* === Animation Tokens === */
 :root {
-  --motion-duration-short: 150ms;
-  --motion-duration-medium: 300ms;
-  --motion-duration-long: 500ms;
-  --motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
-  --motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
-  --motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
-  --motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --motion-duration-short:  130ms;
+  --motion-duration-medium: 270ms;
+  --motion-duration-long:   450ms;
+  --motion-easing-standard:                  cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-emphasized:                cubic-bezier(0.2, 0, 0, 1);
+  --motion-easing-emphasized-decelerate:     cubic-bezier(0.05, 0.7, 0.1, 1);
+  --motion-easing-emphasized-accelerate:     cubic-bezier(0.3, 0, 0.8, 0.15);
 }
-
-/* === 0xSin AI — Performance & Visual Improvements === */
-
-/* GPU-accelerated compositing for key animated elements */
-.message,
-.welcome-screen,
-.snackbar,
-.toolbar-popup,
-.sidebar {
-  will-change: transform, opacity;
-  transform: translateZ(0);
-}
-
-/* Smoother, faster welcome animation */
-@keyframes welcome-in {
-  from { opacity: 0; transform: translateY(20px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* Smoother message entrance */
-@keyframes message-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Improved typing indicator — smoother bounce */
-@keyframes typing-bounce {
-  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
-  40%           { transform: translateY(-6px); opacity: 1; }
-}
-
-/* Improved thinking pulse */
-@keyframes thinking-pulse {
-  0%, 100% { opacity: 0.6; }
-  50%       { opacity: 1; }
-}
-
-/* === Improved Mobile View === */
-@media (max-width: 599px) {
-  /* Fix welcome screen height on mobile browsers with dynamic address bar */
-  .welcome-layout {
-    min-height: -webkit-fill-available;
-    padding-bottom: env(safe-area-inset-bottom, 12px);
-  }
-
-  /* Prevent content jumping on virtual keyboard open */
-  .chat-view {
-    height: 100dvh;
-  }
-
-  /* Better touch targets */
-  .suggestion-chip {
-    min-height: 44px;
-    padding: 10px 16px;
-  }
-
-  /* Smoother scroll on iOS */
-  .chat-messages {
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-  }
-
-  /* Fix model popup clipping off right edge */
-  .model-popup {
-    left: 0 !important;
-    right: 0 !important;
-    max-width: 100%;
-  }
-
-  /* Better attachment strip on mobile */
-  .attachment-strip {
-    padding: 8px 12px;
-    gap: 8px;
-  }
-
-  /* Bigger tap area for remove button */
-  .attachment-remove {
-    min-width: 32px;
-    min-height: 32px;
-  }
-
-  /* Welcome greeting size adjustment */
-  .welcome-greeting {
-    font-size: clamp(24px, 7vw, 36px);
-  }
-
-  /* Fix snackbar bottom on mobile with nav bar */
-  .snackbar {
-    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  }
-
-  /* Message bubble max width on mobile */
-  .bubble-user {
-    max-width: 88vw;
-  }
-}
-
-/* === Smooth Thinking Animation === */
-.message-thinking summary {
-  transition: color var(--motion-duration-short) var(--motion-easing-standard);
-}
-
-.thinking-icon {
-  animation: thinking-pulse 1.8s ease-in-out infinite;
-  display: inline-flex;
-}
-
-/* Stop pulse when thinking is done (details open = collapsed) */
-details[open] .thinking-icon {
-  animation: none;
-}
-
-/* Smooth thinking content reveal */
-.thinking-content {
-  animation: welcome-in var(--motion-duration-medium) var(--motion-easing-emphasized-decelerate);
-}
-
-/* === Smooth Response Streaming === */
-.message-text {
-  line-height: 1.65;
-  letter-spacing: 0.01em;
-  word-break: break-word;
-  overflow-wrap: anywhere;
-}
-
-/* Smooth code block appearance */
-.exec-code-block,
-.code-exec-result {
-  animation: message-in var(--motion-duration-short) var(--motion-easing-emphasized-decelerate);
-}
-
-/* === Performance: reduce paint on scroll === */
-.sidebar-conversations {
-  contain: layout style;
-}
-
-.chat-messages {
-  contain: layout style;
-}
-
-/* === Improved Popup Animations === */
-.toolbar-popup {
-  animation: popup-in var(--motion-duration-short) var(--motion-easing-emphasized-decelerate);
-  transform-origin: bottom center;
-}
-
-@keyframes popup-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.96); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* === Better Focus Styles === */
-.chat-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--md-sys-color-primary);
-  border-radius: var(--md-sys-shape-corner-medium);
-}
-
-/* === Improved Avatar === */
-.message-avatar {
-  background: transparent;
-  box-shadow: none;
-}
-
-.avatar-icon.sinai-logo {
-  background-color: var(--md-sys-color-primary);
-  border-radius: 50%;
-  padding: 4px;
-}
-
-/* === Improved Scrollbar === */
-.chat-messages::-webkit-scrollbar { width: 4px; }
-.sidebar-conversations::-webkit-scrollbar { width: 4px; }
